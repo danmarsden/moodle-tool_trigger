@@ -62,5 +62,28 @@ function xmldb_tool_trigger_upgrade($oldversion) {
         // Trigger savepoint reached.
         upgrade_plugin_savepoint(true, 2018050700, 'tool', 'trigger');
     }
+
+    if ($oldversion < 2018050702) {
+
+        // Define field eventid to be added to tool_trigger_queue.
+        $table = new xmldb_table('tool_trigger_queue');
+        $field = new xmldb_field('eventid', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, null, 'workflowid');
+
+        // Conditionally launch add field eventid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('lasstep', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, 'tries');
+
+        // Conditionally launch add field eventid.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Trigger savepoint reached.
+        upgrade_plugin_savepoint(true, 2018050701, 'tool', 'trigger');
+    }
+
     return true;
 }
